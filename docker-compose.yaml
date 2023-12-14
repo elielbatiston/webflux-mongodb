@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongodb
+    restart: on-failure
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: webflux-mongodb
+      MONGO_INITDB_ROOT_PASSWORD: pass
+      MONGO_INITDB_DATABASE: webflux-mongodb
+    ports:
+      - 27017:27017
+    networks:
+      - webflux-mongodb-network
+
+networks:
+  webflux-mongodb-network:
+    driver: bridge
+    ipam:
+      driver: default

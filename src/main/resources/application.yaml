@@ -1,0 +1,16 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /webflux-mongodb
+
+spring:
+  application:
+    name: webflux-mongodb
+  web:
+    locale: pt-BR
+  data:
+    mongodb:
+      uri: "mongodb://webflux-mongodb:pass@localhost:27017/webflux-mongodb?authSource=admin\
+        &serverSelectionTimeoutMS=2000\
+        &connectTimeoutMS=2000"
+      auto-index-creation: true
