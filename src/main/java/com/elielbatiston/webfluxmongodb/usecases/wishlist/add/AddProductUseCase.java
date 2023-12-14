@@ -23,20 +23,20 @@ public class AddProductUseCase {
 
 	public Mono<Wishlist> execute(final InputAddProductDTO input) {
 		final Integer maximumLimitAllowed = config.getWishlistProductsProperties().getMaximumLimitAllowed();
-		final Mono<Wishlist> wishlist = this.getWishlistOrNew(input);
-		wishlist.flatMap(it -> {
-			it.addProduct(input.product().toDomain());
+		final Mono<Wishlist> wishlistMono = this.getWishlistOrNew(input);
+		return wishlistMono
+			.flatMap(wishlist -> {
+				wishlist.addProduct(input.product().toDomain());
 
-			if (it.getProducts().size() > maximumLimitAllowed) {
-				return Mono.error(
-					new DataIntegrityException(String.format("Quantidade máxima de produtos excedida (%s)", maximumLimitAllowed))
-				);
-			}
+				if (wishlist.getProducts().size() > maximumLimitAllowed) {
+					return Mono.error(
+						new DataIntegrityException(String.format("Quantidade máxima de produtos excedida (%s)", maximumLimitAllowed))
+					);
+				}
 
-			return Mono.just(it);
-		});
-
-		return gateway.save(wishlist);
+				return Mono.just(wishlist);
+			})
+			.flatMap(gateway::save);
 	}
 
 	private Mono<Wishlist> getWishlistOrNew(final InputAddProductDTO input) {

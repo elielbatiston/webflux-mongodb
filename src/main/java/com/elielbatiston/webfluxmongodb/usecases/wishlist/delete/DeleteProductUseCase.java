@@ -27,7 +27,7 @@ public class DeleteProductUseCase {
 						String.format("Objeto %s não encontrado", input.idProduct())
 					));
 				wishlist.removeProduct(product);
-				gateway.save(Mono.just(wishlist));
+				gateway.save(wishlist);
 
 				if (wishlist.getProducts().isEmpty()) {
 					gateway.delete(wishlist.getId());

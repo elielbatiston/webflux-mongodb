@@ -17,10 +17,9 @@ public class WishlistMongoDBGateway implements WishlistGateway {
 	}
 
 	@Override
-	public Mono<Wishlist> save(final Mono<Wishlist> wishlist) {
-		return wishlist
-			.flatMap(it -> repository.save(WishlistModel.fromDomain(it)))
-			.map(WishlistModel::toDomain);
+	public Mono<Wishlist> save(final Wishlist wishlist) {
+		return repository.save(WishlistModel.fromDomain(wishlist))
+			.flatMap(it -> Mono.just(it.toDomain()));
 	}
 
 	@Override
