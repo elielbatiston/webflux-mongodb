@@ -9,6 +9,8 @@ import com.elielbatiston.webfluxmongodb.wishlist.domains.gateways.WishlistGatewa
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.stream.Collectors;
+
 @Service
 public class AddProductUseCase {
 
@@ -21,7 +23,7 @@ public class AddProductUseCase {
 		this.gateway = gateway;
 	}
 
-	public Mono<Wishlist> execute(final InputAddProductDTO input) {
+	public Mono<OutputAddProductDTO> execute(final InputAddProductDTO input) {
 		final Integer maximumLimitAllowed = config.getWishlistProductsProperties().getMaximumLimitAllowed();
 		final Mono<Wishlist> wishlistMono = this.getWishlistOrNew(input);
 		return wishlistMono
@@ -36,7 +38,26 @@ public class AddProductUseCase {
 
 				return Mono.just(wishlist);
 			})
-			.flatMap(gateway::save);
+			.flatMap(gateway::save)
+			.flatMap(transform -> {
+				final var customerDTO = new OutputAddProductDTO.CustomerDTO(
+					transform.getCustomer().getId(),
+					transform.getCustomer().getName()
+				);
+				final var products = transform.getProducts().stream()
+					.map(product -> new OutputAddProductDTO.ProductDTO(
+						product.getId(),
+						product.getName(),
+						product.getPrice()
+					))
+					.collect(Collectors.toSet());
+
+				return Mono.just(new OutputAddProductDTO(
+					transform.getId(),
+					customerDTO,
+					products
+				));
+			});
 	}
 
 	private Mono<Wishlist> getWishlistOrNew(final InputAddProductDTO input) {
