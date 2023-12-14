@@ -5,7 +5,7 @@ import reactor.core.publisher.Mono;
 
 public interface WishlistGateway {
 
-	void save(final Wishlist wishlist);
+	Mono<Wishlist> save(final Wishlist wishlist);
 	void delete(final String id);
 	Mono<Wishlist> getWishlist(final String idCustomer);
 }
