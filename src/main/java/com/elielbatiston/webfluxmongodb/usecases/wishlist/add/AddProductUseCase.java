@@ -5,7 +5,7 @@ import com.elielbatiston.webfluxmongodb.domains.Customer;
 import com.elielbatiston.webfluxmongodb.domains.Wishlist;
 import com.elielbatiston.webfluxmongodb.domains.exceptions.DataIntegrityException;
 import com.elielbatiston.webfluxmongodb.domains.exceptions.ObjectNotFoundException;
-import com.elielbatiston.webfluxmongodb.usecases.gateways.WishlistGateway;
+import com.elielbatiston.webfluxmongodb.domains.gateways.WishlistGateway;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

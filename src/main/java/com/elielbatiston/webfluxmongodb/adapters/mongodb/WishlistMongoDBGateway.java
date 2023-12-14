@@ -3,7 +3,7 @@ package com.elielbatiston.webfluxmongodb.adapters.mongodb;
 import com.elielbatiston.webfluxmongodb.adapters.repositories.WishlistRepository;
 import com.elielbatiston.webfluxmongodb.adapters.repositories.models.WishlistModel;
 import com.elielbatiston.webfluxmongodb.domains.Wishlist;
-import com.elielbatiston.webfluxmongodb.usecases.gateways.WishlistGateway;
+import com.elielbatiston.webfluxmongodb.domains.gateways.WishlistGateway;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

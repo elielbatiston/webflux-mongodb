@@ -1,4 +1,4 @@
-package com.elielbatiston.webfluxmongodb.usecases.gateways;
+package com.elielbatiston.webfluxmongodb.domains.gateways;
 
 import com.elielbatiston.webfluxmongodb.domains.Wishlist;
 import reactor.core.publisher.Mono;
