@@ -12,17 +12,14 @@ import com.elielbatiston.webfluxmongodb.wishlist.usecases.find.OutputFindProduct
 import com.elielbatiston.webfluxmongodb.wishlist.usecases.findall.FindAllProductsUseCase;
 import com.elielbatiston.webfluxmongodb.wishlist.usecases.findall.InputFindAllProductsDTO;
 import com.elielbatiston.webfluxmongodb.wishlist.usecases.findall.OutputFindAllProductsDTO;
+import com.elielbatiston.webfluxmongodb.wishlist.usecases.findallwishlistbyids.FindAllWishlistByIdsUseCase;
+import com.elielbatiston.webfluxmongodb.wishlist.usecases.findallwishlistbyids.InputFindAllWishlistByIds;
+import com.elielbatiston.webfluxmongodb.wishlist.usecases.getidsallwishlist.GetIdsAllWishlistUseCase;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
-
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping(WishlistController.WISHLIST_RESOURCE)
@@ -34,32 +31,34 @@ public class WishlistController {
 	private static final String WISHLIST_GET_A_PRODUCT_IN_WISHLIST_ENDPOINT = "/{idCustomer}/{idProduct}";
 	private static final String WISHLIST_GET_ALL_WISHLIST = "/all";
 	private static final String WISHLIST_GET_IDS_ALL_WISHLIST = "/ids";
-	private static final Logger log = LoggerFactory.getLogger(WishlistController.class);
-	public static final int CONCURRENCY = 2000;
 
 	private final AddProductUseCase addProductUseCase;
 	private final DeleteProductUseCase deleteProductUseCase;
 	private final FindAllProductsUseCase findAllProductsUseCase;
 	private final FindProductUseCase findProductUseCase;
+	private final FindAllWishlistByIdsUseCase findAllWishlistByIdsUseCase;
+	private final GetIdsAllWishlistUseCase getIdsAllWishlistUseCase;
 
 	public WishlistController(
 		final AddProductUseCase addProductUseCase,
 		final DeleteProductUseCase deleteProductUseCase,
 		final FindAllProductsUseCase findAllProductsUseCase,
-		final FindProductUseCase findProductUseCase
+		final FindProductUseCase findProductUseCase,
+		final FindAllWishlistByIdsUseCase findAllWishlistByIdsUseCase,
+		final GetIdsAllWishlistUseCase getIdsAllWishlistUseCase
 	) {
 		this.addProductUseCase = addProductUseCase;
 		this.deleteProductUseCase = deleteProductUseCase;
 		this.findAllProductsUseCase = findAllProductsUseCase;
 		this.findProductUseCase = findProductUseCase;
+		this.findAllWishlistByIdsUseCase = findAllWishlistByIdsUseCase;
+		this.getIdsAllWishlistUseCase = getIdsAllWishlistUseCase;
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Mono<OutputAddProductDTO> save(@Valid @RequestBody final InputAddProductDTO dto) {
-		log.info("Wishlist to be add - Customer {} and Product {}", dto.customer().id(), dto.product().id());
-		return addProductUseCase.execute(dto)
-			.doOnNext(next -> log.info("Wishlist added - Customer {} and Product {}", dto.customer().id(), dto.product().id()));
+	public Mono<OutputAddProductDTO> save(@Valid @RequestBody final InputAddProductDTO input) {
+		return addProductUseCase.execute(input);
 	}
 
 	@DeleteMapping(WISHLIST_DELETE_A_PRODUCT_ENDPOINT)
@@ -77,11 +76,9 @@ public class WishlistController {
 
 	@GetMapping(WISHLIST_GET_WISHLIST_ENDPOINT)
 	@ResponseStatus(HttpStatus.OK)
-	public Mono<OutputFindAllProductsDTO> getWishlist(@PathVariable final String idCustomer) {
-		log.info("Get a customer wishlist - Customer {}", idCustomer);
+	public Mono<OutputFindAllProductsDTO> getWishlistByCustomer(@PathVariable final String idCustomer) {
 		final InputFindAllProductsDTO input = new InputFindAllProductsDTO(idCustomer);
-		return findAllProductsUseCase.execute(input)
-			.doOnNext(next -> log.info("Get a customer wishlist founded - Customer {}", idCustomer);
+		return findAllProductsUseCase.execute(input);
 	}
 
 	@GetMapping(WISHLIST_GET_A_PRODUCT_IN_WISHLIST_ENDPOINT)
@@ -90,9 +87,18 @@ public class WishlistController {
 		@PathVariable final String idCustomer,
 		@PathVariable final String idProduct
 	) {
-		log.info("Get a product into customer wishlist - Customer {} and Product {}", idCustomer, idProduct);
 		final InputFindProductDTO input = new InputFindProductDTO(idCustomer, idProduct);
-		return findProductUseCase.execute(input)
-			.doOnNext(next -> log.info("Get a product into customer wishlist founded - Customer {} and Product {}", idCustomer, idProduct)));
+		return findProductUseCase.execute(input);
+	}
+
+	@GetMapping(WISHLIST_GET_ALL_WISHLIST)
+	public Flux<Wishlist> findAllById(@RequestParam final String ids) {
+		final var input = new InputFindAllWishlistByIds(ids);
+		return findAllWishlistByIdsUseCase.execute(input);
+	}
+
+	@GetMapping(WISHLIST_GET_IDS_ALL_WISHLIST)
+	public Mono<String> getIds() {
+		return getIdsAllWishlistUseCase.execute();
 	}
 }
