@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class WishlistProductsProperties {
 
 	@NotBlank
-	private Integer maximumLimitAllowed;
+	private final Integer maximumLimitAllowed;
 
 	public WishlistProductsProperties(final Integer maximumLimitAllowed) {
 		this.maximumLimitAllowed = maximumLimitAllowed;

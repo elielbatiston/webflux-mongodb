@@ -1,7 +1,6 @@
 package com.elielbatiston.webfluxmongodb.wishlist.usecases.add;
 
 import com.elielbatiston.webfluxmongodb.configs.WishlistConfig;
-import com.elielbatiston.webfluxmongodb.wishlist.adapters.controllers.WishlistController;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.Customer;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.Wishlist;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.exceptions.DataIntegrityException;

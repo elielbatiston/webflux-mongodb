@@ -29,14 +29,6 @@ public class WishlistModel {
 		return id;
 	}
 
-	public CustomerModel getCustomer() {
-		return customer;
-	}
-
-	public Set<ProductModel> getProducts() {
-		return products;
-	}
-
 	public Wishlist toDomain() {
 		final Wishlist wishlist = new Wishlist(
 			this.id,

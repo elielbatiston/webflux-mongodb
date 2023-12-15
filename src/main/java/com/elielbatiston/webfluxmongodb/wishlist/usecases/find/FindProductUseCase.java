@@ -1,6 +1,5 @@
 package com.elielbatiston.webfluxmongodb.wishlist.usecases.find;
 
-import com.elielbatiston.webfluxmongodb.wishlist.adapters.controllers.WishlistController;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.Wishlist;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.exceptions.ObjectNotFoundException;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.gateways.WishlistGateway;

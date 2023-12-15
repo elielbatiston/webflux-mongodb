@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class Wishlist extends Entity {
 
-	private Customer customer;
+	private final Customer customer;
 	private Set<Product> products;
 
 	public Wishlist(final String id, final Customer customer) {

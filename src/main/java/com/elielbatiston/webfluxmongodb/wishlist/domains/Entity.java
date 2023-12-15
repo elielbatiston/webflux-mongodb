@@ -3,7 +3,7 @@ package com.elielbatiston.webfluxmongodb.wishlist.domains;
 import java.util.Objects;
 
 public abstract class Entity {
-	private String id;
+	private final String id;
 
 	public Entity(final String id) {
 		this.id = id;

@@ -2,8 +2,8 @@ package com.elielbatiston.webfluxmongodb.wishlist.domains;
 
 public class Product extends Entity {
 
-	private String name;
-	private Double price;
+	private final String name;
+	private final Double price;
 
 	public Product(final String id, final String name, final Double price) {
 		super(id);

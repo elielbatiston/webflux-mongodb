@@ -1,7 +1,6 @@
 package com.elielbatiston.webfluxmongodb.wishlist.usecases.delete;
 
 import com.elielbatiston.webfluxmongodb.wishlist.domains.Product;
-import com.elielbatiston.webfluxmongodb.wishlist.domains.Wishlist;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.exceptions.ObjectNotFoundException;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.gateways.WishlistGateway;
 import org.slf4j.Logger;

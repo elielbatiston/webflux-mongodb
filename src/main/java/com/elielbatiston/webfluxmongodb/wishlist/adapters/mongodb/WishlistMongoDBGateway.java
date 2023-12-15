@@ -4,7 +4,6 @@ import com.elielbatiston.webfluxmongodb.wishlist.adapters.repositories.WishlistR
 import com.elielbatiston.webfluxmongodb.wishlist.adapters.repositories.models.WishlistModel;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.Wishlist;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.gateways.WishlistGateway;
-import com.elielbatiston.webfluxmongodb.wishlist.usecases.add.AddProductUseCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
