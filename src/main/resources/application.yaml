@@ -14,3 +14,7 @@ spring:
         &serverSelectionTimeoutMS=2000\
         &connectTimeoutMS=2000"
       auto-index-creation: true
+
+wishlist:
+  products:
+    maximum-limit-allowed: 10
