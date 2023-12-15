@@ -14,6 +14,14 @@ public class CustomerModel {
 		this.name = name;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 	public Customer toDomain() {
 		return new Customer(
 			this.id,
