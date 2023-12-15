@@ -1,11 +1,13 @@
 package com.elielbatiston.webfluxmongodb.wishlist.usecases.add;
 
 import com.elielbatiston.webfluxmongodb.configs.WishlistConfig;
+import com.elielbatiston.webfluxmongodb.wishlist.adapters.controllers.WishlistController;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.Customer;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.Wishlist;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.exceptions.DataIntegrityException;
-import com.elielbatiston.webfluxmongodb.wishlist.domains.exceptions.ObjectNotFoundException;
 import com.elielbatiston.webfluxmongodb.wishlist.domains.gateways.WishlistGateway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class AddProductUseCase {
+
+	private static final Logger log = LoggerFactory.getLogger(AddProductUseCase.class);
 
 	private final WishlistConfig config;
 
@@ -24,6 +28,8 @@ public class AddProductUseCase {
 	}
 
 	public Mono<OutputAddProductDTO> execute(final InputAddProductDTO input) {
+		log.info("Wishlist to be add - Customer {} and Product {}", input.customer().id(), input.product().id());
+
 		final Integer maximumLimitAllowed = config.getWishlistProductsProperties().getMaximumLimitAllowed();
 		final Mono<Wishlist> wishlistMono = this.getWishlistOrNew(input);
 		return wishlistMono
@@ -38,7 +44,9 @@ public class AddProductUseCase {
 
 				return Mono.just(wishlist);
 			})
+			.doOnNext(next -> log.info("Wishlist received - Customer {}", next.getCustomer().getId()))
 			.flatMap(gateway::save)
+			.doOnNext(next -> log.info("Saving wishlist - Customer {} and Product {}", input.customer().id(), input.product().id()))
 			.flatMap(transform -> {
 				final var customerDTO = new OutputAddProductDTO.CustomerDTO(
 					transform.getCustomer().getId(),
@@ -57,25 +65,23 @@ public class AddProductUseCase {
 					customerDTO,
 					products
 				));
-			});
+			})
+			.doOnNext(next -> log.info("Wishlist added - Customer {} and Product {}", input.customer().id(), input.product().id()));
 	}
 
 	private Mono<Wishlist> getWishlistOrNew(final InputAddProductDTO input) {
-		try {
-			final Mono<Wishlist> wishlist = gateway.getWishlist(input.customer().id());
-			wishlist
-				.flatMap(it -> {
-					it.getCustomer().changeName(input.customer().name());
-					return Mono.just(it);
-				});
-
-			return wishlist;
-		} catch (final ObjectNotFoundException ex) {
-			final Customer customer = new Customer(
-				input.customer().id(),
-				input.customer().name()
-			);
-			return Mono.just(new Wishlist(customer));
-		}
+		return gateway.getWishlist(input.customer().id())
+				.flatMap(wishlist -> {
+					wishlist.getCustomer().changeName(input.customer().name());
+					return Mono.just(wishlist);
+				})
+			.switchIfEmpty(Mono.defer(() -> {
+				final var customer = new Customer(
+					input.customer().id(),
+					input.customer().name()
+				);
+				final var wishlist = new Wishlist(customer);
+				return Mono.just(wishlist);
+			}));
 	}
 }
